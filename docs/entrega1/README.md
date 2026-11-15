@@ -3,6 +3,11 @@
 Projeto Integrador: Segurança Aplicada ao Desenvolvimento
 Equipe: João Pedro Andrade Oliveira, Erick Silva Vieira, Ivys Gabriel Alves Santos Almeida
 
+> Este documento descreve a Entrega 1 como foi entregue (tag `entrega-1` do Git), quando os programas
+> `gerar_chaves.py`, `cliente.py`, `analista.py` e `teste_adulteracao.py` ficavam em `entrega1-criptografia/`.
+> No projeto atual o mesmo código está em `helpdesk/criptografia.py`, com a linha de comando
+> `python -m helpdesk` (veja o [README da raiz](../../README.md)).
+
 ## 1. Problema e objetivo
 
 Setores de TI recebem chamados que podem conter credenciais temporárias,

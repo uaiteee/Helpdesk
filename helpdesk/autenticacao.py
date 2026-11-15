@@ -4,7 +4,7 @@ A senha nunca é gravada: o banco guarda apenas o salt aleatório e o hash
 derivado pelo scrypt, junto com os parâmetros usados.
 
 Classes (cada uma com uma responsabilidade):
-    Usuario                 registro de um usuário (sem a senha).
+    Usuario                 registro de um usuário (perfil cliente ou analista; sem a senha).
     PoliticaSenha           regras de tamanho da senha.
     HasherScrypt            deriva e verifica hashes com scrypt (hashlib).
     VerificadorVazamentos   interface para checar senhas vazadas.
@@ -29,6 +29,9 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
+PERFIS = ("cliente", "analista")
+
+
 class ErroAutenticacao(Exception):
     """Cadastro ou autenticação recusados."""
 
@@ -49,6 +52,7 @@ class Usuario:
     p: int
     falhas: int = 0
     bloqueado_ate: float = 0.0
+    perfil: str = "cliente"
 
 
 class PoliticaSenha:
@@ -168,7 +172,8 @@ class RepositorioUsuarios:
                        hash BLOB NOT NULL,
                        n INTEGER NOT NULL, r INTEGER NOT NULL, p INTEGER NOT NULL,
                        falhas INTEGER NOT NULL DEFAULT 0,
-                       bloqueado_ate REAL NOT NULL DEFAULT 0
+                       bloqueado_ate REAL NOT NULL DEFAULT 0,
+                       perfil TEXT NOT NULL DEFAULT 'cliente'
                    )"""
             )
 
@@ -185,8 +190,9 @@ class RepositorioUsuarios:
         try:
             with self._conectar() as conexao:
                 conexao.execute(
-                    "INSERT INTO usuarios (usuario, salt, hash, n, r, p) VALUES (?, ?, ?, ?, ?, ?)",
-                    (usuario.nome, usuario.salt, usuario.hash_senha, usuario.n, usuario.r, usuario.p),
+                    "INSERT INTO usuarios (usuario, salt, hash, n, r, p, perfil) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    (usuario.nome, usuario.salt, usuario.hash_senha, usuario.n, usuario.r, usuario.p,
+                     usuario.perfil),
                 )
         except sqlite3.IntegrityError:
             raise UsuarioDuplicado(usuario.nome) from None
@@ -194,7 +200,7 @@ class RepositorioUsuarios:
     def buscar(self, nome: str):
         with self._conectar() as conexao:
             linha = conexao.execute(
-                "SELECT usuario, salt, hash, n, r, p, falhas, bloqueado_ate FROM usuarios WHERE usuario=?",
+                "SELECT usuario, salt, hash, n, r, p, falhas, bloqueado_ate, perfil FROM usuarios WHERE usuario=?",
                 (nome,),
             ).fetchone()
         return self._para_usuario(linha) if linha else None
@@ -209,7 +215,7 @@ class RepositorioUsuarios:
     def listar(self) -> list:
         with self._conectar() as conexao:
             linhas = conexao.execute(
-                "SELECT usuario, salt, hash, n, r, p, falhas, bloqueado_ate FROM usuarios ORDER BY usuario"
+                "SELECT usuario, salt, hash, n, r, p, falhas, bloqueado_ate, perfil FROM usuarios ORDER BY usuario"
             ).fetchall()
         return [self._para_usuario(linha) for linha in linhas]
 
@@ -271,7 +277,9 @@ class ServicoAutenticacao:
             )
         return nome.lower()  # "Alice" e "alice" são o mesmo usuário
 
-    def cadastrar(self, nome: str, senha: str) -> None:
+    def cadastrar(self, nome: str, senha: str, perfil: str = "cliente") -> None:
+        if perfil not in PERFIS:
+            raise ErroAutenticacao("perfil inválido")
         nome = self._normalizar_usuario(nome)
         self.politica_senha.validar(senha)
         if self.verificador.foi_vazada(senha):
@@ -279,13 +287,13 @@ class ServicoAutenticacao:
         salt, derivado = self.hasher.novo_hash(senha)
         try:
             self.repositorio.inserir(
-                Usuario(nome, salt, derivado, self.hasher.n, self.hasher.r, self.hasher.p)
+                Usuario(nome, salt, derivado, self.hasher.n, self.hasher.r, self.hasher.p, perfil=perfil)
             )
         except UsuarioDuplicado:
             raise ErroAutenticacao("usuário já cadastrado") from None
 
-    def autenticar(self, nome: str, senha: str) -> bool:
-        """Devolve True se o login estiver correto; caso contrário lança ErroAutenticacao.
+    def autenticar(self, nome: str, senha: str) -> Usuario:
+        """Devolve o Usuario se o login estiver correto; caso contrário lança ErroAutenticacao.
 
         A mensagem de erro é a mesma para usuário inexistente e senha errada,
         para não revelar quais usuários existem.
@@ -309,4 +317,4 @@ class ServicoAutenticacao:
 
         if usuario.falhas or usuario.bloqueado_ate:
             self.repositorio.atualizar_falhas(usuario.nome, 0, 0.0)
-        return True
+        return usuario

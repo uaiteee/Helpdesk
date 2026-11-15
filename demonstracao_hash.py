@@ -1,6 +1,6 @@
 """Demonstração para a documentação: por que SHA-256 puro não serve para senhas.
 
-Executa: python demonstracao.py
+Executa: python demonstracao_hash.py
 Mostra (1) SHA-256 sem salt gera sempre o mesmo hash, (2) a velocidade do
 SHA-256 contra a do scrypt e (3) que o scrypt com salt diferente gera hashes
 diferentes para a mesma senha.
@@ -9,7 +9,7 @@ diferentes para a mesma senha.
 import hashlib
 import time
 
-from autenticacao import HasherScrypt
+from helpdesk.autenticacao import HasherScrypt
 
 SENHA = "senha-de-exemplo-123"
 

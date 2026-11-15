@@ -1,4 +1,4 @@
-"""Testes da Entrega 2. Executar: python -m unittest -v
+"""Testes da Entrega 2. Executar: python -m unittest -v (na raiz do projeto)
 
 Os testes usam scrypt com N pequeno (rápido) e relógio falso; um teste
 confere que o padrão de produção segue o mínimo da OWASP.
@@ -10,7 +10,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from autenticacao import (ErroAutenticacao, HasherScrypt, PoliticaBloqueio, PwnedPasswords,
+from helpdesk.autenticacao import (ErroAutenticacao, HasherScrypt, PoliticaBloqueio, PwnedPasswords,
                           RepositorioUsuarios, SemVerificacao, ServicoAutenticacao,
                           VerificadorVazamentos)
 
@@ -91,6 +91,13 @@ class TestLogin(BaseTeste):
         super().setUp()
         self.servico.cadastrar("alice", SENHA)
 
+    def test_login_devolve_usuario_com_perfil_padrao(self):
+        self.assertEqual(self.servico.autenticar("alice", SENHA).perfil, "cliente")
+
+    def test_perfil_invalido_recusado(self):
+        with self.assertRaises(ErroAutenticacao):
+            self.servico.cadastrar("bruno", SENHA, perfil="admin")
+
     def test_login_correto(self):
         self.assertTrue(self.servico.autenticar("alice", SENHA))
         self.assertTrue(self.servico.autenticar("ALICE", SENHA))
@@ -111,7 +118,7 @@ class TestLogin(BaseTeste):
         self.assertTrue(self.servico.autenticar("carla", "café com leite 2026"))  # e + acento
 
     def test_comparacao_usa_compare_digest(self):
-        with patch("autenticacao.hmac.compare_digest", return_value=True) as comparar:
+        with patch("helpdesk.autenticacao.hmac.compare_digest", return_value=True) as comparar:
             self.assertTrue(self.servico.autenticar("alice", "qualquer coisa aqui"))
         comparar.assert_called_once()
 
@@ -194,22 +201,22 @@ class TestPwnedPasswords(unittest.TestCase):
 
     def test_encontrada(self):
         resposta = RespostaFalsa("1E4C9B93F3F0682250B6CF8331B7EE68FD8:9545824\r\nABCDEF:2")
-        with patch("autenticacao.urllib.request.urlopen", return_value=resposta) as abrir:
+        with patch("helpdesk.autenticacao.urllib.request.urlopen", return_value=resposta) as abrir:
             self.assertTrue(PwnedPasswords().foi_vazada(self.SENHA))
         # Só o prefixo de 5 caracteres vai para a rede.
         self.assertTrue(abrir.call_args[0][0].full_url.endswith("/5BAA6"))
 
     def test_nao_encontrada(self):
-        with patch("autenticacao.urllib.request.urlopen", return_value=RespostaFalsa("ABCDEF:2")):
+        with patch("helpdesk.autenticacao.urllib.request.urlopen", return_value=RespostaFalsa("ABCDEF:2")):
             self.assertFalse(PwnedPasswords().foi_vazada(self.SENHA))
 
     def test_linha_de_preenchimento_com_contagem_zero_e_ignorada(self):
         resposta = RespostaFalsa("1E4C9B93F3F0682250B6CF8331B7EE68FD8:0")
-        with patch("autenticacao.urllib.request.urlopen", return_value=resposta):
+        with patch("helpdesk.autenticacao.urllib.request.urlopen", return_value=resposta):
             self.assertFalse(PwnedPasswords().foi_vazada(self.SENHA))
 
     def test_sem_rede_recusa_o_cadastro(self):
-        with patch("autenticacao.urllib.request.urlopen", side_effect=OSError("sem rede")):
+        with patch("helpdesk.autenticacao.urllib.request.urlopen", side_effect=OSError("sem rede")):
             with self.assertRaises(ErroAutenticacao):
                 PwnedPasswords().foi_vazada(self.SENHA)
 

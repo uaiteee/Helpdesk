@@ -225,6 +225,6 @@ chaves/
 
 chamados/
 desktop.ini
-# Entrega 2: banco local de usuarios
-entrega2-autenticacao/dados/
+# Banco local de usuarios (Entrega 2)
+dados/
 *.db

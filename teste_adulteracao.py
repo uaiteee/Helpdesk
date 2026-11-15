@@ -13,8 +13,8 @@ import base64
 import copy
 import sys
 
-from gerar_chaves import CHAVES, obter_senha
-from helpdesk import Analista, Cliente, Envelope, EnvelopeInvalido
+from helpdesk.config import CHAVES, obter_senha_chave
+from helpdesk.criptografia import Analista, Cliente, Envelope, EnvelopeInvalido
 
 TEXTO_ORIGINAL = "Meu computador não liga. Patrimônio 4521, sala 302."
 
@@ -38,7 +38,7 @@ def trocar_texto_por_outro(envelope: dict, chave_publica) -> None:
 
 def main() -> int:
     chave_publica = CHAVES.carregar_publica()
-    analista = Analista(CHAVES.carregar_privada(obter_senha()))
+    analista = Analista(CHAVES.carregar_privada(obter_senha_chave()))
 
     original = Cliente(chave_publica).cifrar(TEXTO_ORIGINAL).para_dict()
 
