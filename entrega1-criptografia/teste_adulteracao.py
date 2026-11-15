@@ -13,9 +13,8 @@ import base64
 import copy
 import sys
 
-from analista import EnvelopeInvalido, carregar_chave_privada, decifrar_chamado
-from cliente import carregar_chave_publica, cifrar_chamado
-from gerar_chaves import obter_senha
+from gerar_chaves import CHAVES, obter_senha
+from helpdesk import Analista, Cliente, Envelope, EnvelopeInvalido
 
 TEXTO_ORIGINAL = "Meu computador não liga. Patrimônio 4521, sala 302."
 
@@ -33,22 +32,22 @@ def adulterar_ultimo_byte(campo_b64: str) -> str:
 
 def trocar_texto_por_outro(envelope: dict, chave_publica) -> None:
     """Substitui o texto cifrado pelo de outro chamado (mesmo tamanho não importa)."""
-    outro = cifrar_chamado("Por favor, resetem a senha do diretor.", chave_publica)
+    outro = Cliente(chave_publica).cifrar("Por favor, resetem a senha do diretor.").para_dict()
     envelope["texto_cifrado"] = outro["texto_cifrado"]
 
 
 def main() -> int:
-    chave_publica = carregar_chave_publica()
-    chave_privada = carregar_chave_privada(obter_senha())
+    chave_publica = CHAVES.carregar_publica()
+    analista = Analista(CHAVES.carregar_privada(obter_senha()))
 
-    original = cifrar_chamado(TEXTO_ORIGINAL, chave_publica)
+    original = Cliente(chave_publica).cifrar(TEXTO_ORIGINAL).para_dict()
 
     print("== Controle: envelope íntegro ==")
-    texto = decifrar_chamado(original, chave_privada)
+    texto = analista.decifrar(Envelope.de_dict(original))
     assert texto == TEXTO_ORIGINAL, "o envelope íntegro não decifrou corretamente"
     print(f"  OK, decifrado: {texto!r}\n")
 
-    outro_envelope = cifrar_chamado("Outro chamado qualquer.", chave_publica)
+    outro_envelope = Cliente(chave_publica).cifrar("Outro chamado qualquer.").para_dict()
 
     adulteracoes = {
         "1 bit invertido no texto cifrado":
@@ -82,7 +81,7 @@ def main() -> int:
         envelope = copy.deepcopy(original)
         adulterar(envelope)
         try:
-            resultado = decifrar_chamado(envelope, chave_privada)
+            resultado = analista.decifrar(Envelope.de_dict(envelope))
         except EnvelopeInvalido as erro:
             print(f"  [DETECTADA]     {descricao}\n                  -> {erro}")
         else:

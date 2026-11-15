@@ -23,6 +23,7 @@ Qualquer alteração no chamado cifrado deve ser detectada.
 
 ```
 entrega1-criptografia/
+├── helpdesk.py            # classes: RepositorioChaves, Envelope, Cliente, Analista
 ├── gerar_chaves.py        # gera o par de chaves RSA do suporte
 ├── cliente.py             # cifra o chamado (envelope híbrido)
 ├── analista.py            # decifra o chamado com a chave privada
@@ -30,6 +31,9 @@ entrega1-criptografia/
 ├── evidencias/            # prints da execução
 ├── chaves/                # gerada localmente; NÃO vai para o Git
 └── chamados/              # envelopes cifrados; NÃO vai para o Git
+
+O código é orientado a objetos (`helpdesk.py`); os demais `.py` são só a linha de comando.
+A Entrega 2 está em `../entrega2-autenticacao/`.
 ```
 
 ## 4. Como executar
