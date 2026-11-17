@@ -31,19 +31,60 @@ Helpdesk/
 └── requirements.txt
 ```
 
-## Como usar
+## Requisitos
 
-Na raiz do projeto, com o ambiente virtual ativo:
+- Windows, com [Python 3](https://www.python.org/downloads/) (marque "Add Python to PATH" na instalação; testado com 3.13 e 3.14) e [Git](https://git-scm.com/downloads)
+- Internet para instalar as dependências e, opcionalmente, para a verificação de senhas vazadas
+
+## Instalação (máquina nova)
 
 ```
+git clone https://github.com/uaiteee/Helpdesk.git
+cd Helpdesk
+python -m venv venv
+venv\Scripts\activate
 pip install -r requirements.txt
+```
+
+Os comandos abaixo são executados na raiz do projeto, com o ambiente virtual ativo (aparece `(venv)` no início da linha).
+Se `python` não for reconhecido, use `py`.
+
+## Primeira execução
+
+As chaves, os chamados e o banco de usuários não vão para o Git, então são criados localmente:
+
+```
 python -m helpdesk gerar-chaves
 python -m helpdesk cadastrar alice
 python -m helpdesk cadastrar ana --analista
+```
+
+O `cadastrar` consulta a API Pwned Passwords para recusar senhas vazadas; sem internet, acrescente `--offline`.
+As senhas têm no mínimo 12 caracteres e não aparecem na tela. Criar um analista pede também a senha da chave
+privada definida em `gerar-chaves`.
+
+## Uso
+
+```
 python -m helpdesk abrir-chamado alice "Meu computador não liga"
 python -m helpdesk ler-chamado ana chamados\chamado_<id>.json
-python -m unittest -v
+python -m helpdesk banco
 ```
+
+- `abrir-chamado`: qualquer usuário autenticado cifra um chamado.
+- `ler-chamado`: só analistas decifram (pede a senha de login e a da chave privada).
+- `banco`: mostra o que fica gravado (salt, hash e parâmetros do scrypt, nunca a senha).
+- Troque `<id>` pelo nome do arquivo mostrado pelo `abrir-chamado`.
+
+## Testes e demonstrações
+
+```
+python -m unittest -v          # 32 testes automatizados
+python teste_adulteracao.py    # Entrega 1: 11 adulterações detectadas
+python demonstracao_hash.py    # Entrega 2: SHA-256 x scrypt
+```
+
+## Segurança
 
 Nenhum algoritmo criptográfico é próprio: usamos `cryptography` (Entrega 1) e `hashlib.scrypt` (Entrega 2).
 Chaves (`*.pem`), chamados cifrados e bancos de dados não vão para o Git.

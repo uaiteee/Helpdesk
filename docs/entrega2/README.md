@@ -12,7 +12,7 @@ e a conferência é feita de forma segura.
 
 ## 2. Ambiente e tecnologias
 
-- Python 3.13 ou superior; apenas biblioteca padrão (`hashlib`, `hmac`, `sqlite3`, `unittest`).
+- Python 3 (testado com 3.13 e 3.14); apenas biblioteca padrão (`hashlib`, `hmac`, `sqlite3`, `unittest`).
 - Nada de criptografia própria: o scrypt é o `hashlib.scrypt` (OpenSSL).
 
 ## 3. Algoritmo e justificativa
@@ -37,7 +37,7 @@ e a conferência é feita de forma segura.
 2. Sem **salt**, a mesma senha gera sempre o mesmo hash: quem vê dois hashes iguais sabe que
    as senhas são iguais, e tabelas pré-calculadas (rainbow tables) quebram o hash na hora.
 3. Não tem **fator de custo** ajustável. Funções como scrypt, Argon2id, bcrypt e PBKDF2 foram
-   feitas para ser lentas e configuráveis. O comando `python demonstracao.py` mostra isso na prática.
+   feitas para ser lentas e configuráveis. O comando `python demonstracao_hash.py` mostra isso na prática.
 
 ## 4. Implementação e execução
 

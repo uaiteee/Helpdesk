@@ -38,10 +38,13 @@ entrega1-criptografia/
 └── chamados/              # envelopes cifrados; NÃO vai para o Git
 
 O código é orientado a objetos (`helpdesk.py`); os demais `.py` são só a linha de comando.
-A Entrega 2 está em `../entrega2-autenticacao/`.
+A Entrega 2 está em [`../entrega2/`](../entrega2/README.md).
 ```
 
 ## 4. Como executar
+
+> Comandos da época da Entrega 1 (tag `entrega-1`). No projeto atual, use `python -m helpdesk`
+> como descrito no [README da raiz](../../README.md); o login passou a ser obrigatório.
 
 Na raiz do repositório:
 
