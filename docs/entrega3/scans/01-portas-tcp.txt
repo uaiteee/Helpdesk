@@ -1,0 +1,10 @@
+# Nmap 7.80 scan initiated Sat Nov 21 01:59:47 2026 as: "C:\\Program Files (x86)\\Nmap\\nmap.exe" -p- -T4 -oN 01-portas-tcp.txt 192.168.56.102
+Nmap scan report for 192.168.56.102
+Host is up (0.0011s latency).
+Not shown: 65533 closed ports
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+MAC Address: 08:00:27:41:54:EB (Oracle VirtualBox virtual NIC)
+
+# Nmap done at Sat Nov 21 01:59:53 2026 -- 1 IP address (1 host up) scanned in 6.79 seconds

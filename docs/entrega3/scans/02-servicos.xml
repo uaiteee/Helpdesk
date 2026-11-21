@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///C:/Program Files (x86)/Nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.80 scan initiated Sat Nov 21 02:00:17 2026 as: &quot;C:\\Program Files (x86)\\Nmap\\nmap.exe&quot; -sV -sC -p 22,80 -oN 02-servicos.txt -oX 02-servicos.xml 192.168.56.102 -->
+<nmaprun scanner="nmap" args="&quot;C:\\Program Files (x86)\\Nmap\\nmap.exe&quot; -sV -sC -p 22,80 -oN 02-servicos.txt -oX 02-servicos.xml 192.168.56.102" start="1795237217" startstr="Sat Nov 21 02:00:17 2026" version="7.80" xmloutputversion="1.04">
+<scaninfo type="syn" protocol="tcp" numservices="2" services="22,80"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<host starttime="1795237220" endtime="1795237226"><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.56.102" addrtype="ipv4"/>
+<address addr="08:00:27:41:54:EB" addrtype="mac" vendor="Oracle VirtualBox virtual NIC"/>
+<hostnames>
+</hostnames>
+<ports><port protocol="tcp" portid="22"><state state="open" reason="syn-ack" reason_ttl="64"/><service name="ssh" product="OpenSSH" version="10.2p1 Ubuntu 2ubuntu3.8" extrainfo="Ubuntu Linux; protocol 2.0" ostype="Linux" method="probed" conf="10"><cpe>cpe:/a:openbsd:openssh:10.2p1</cpe><cpe>cpe:/o:linux:linux_kernel</cpe></service></port>
+<port protocol="tcp" portid="80"><state state="open" reason="syn-ack" reason_ttl="64"/><service name="http" product="Apache httpd" version="2.4.66" extrainfo="(Ubuntu)" method="probed" conf="10"><cpe>cpe:/a:apache:http_server:2.4.66</cpe></service><script id="http-server-header" output="Apache/2.4.66 (Ubuntu)"><elem>Apache/2.4.66 (Ubuntu)</elem>
+</script><script id="http-title" output="Apache2 Ubuntu Default Page: It works"><elem key="title">Apache2 Ubuntu Default Page: It works</elem>
+</script></port>
+</ports>
+<times srtt="234" rttvar="3218" to="100000"/>
+</host>
+<runstats><finished time="1795237226" timestr="Sat Nov 21 02:00:26 2026" elapsed="9.46" summary="Nmap done at Sat Nov 21 02:00:26 2026; 1 IP address (1 host up) scanned in 9.46 seconds" exit="success"/><hosts up="1" down="0" total="1"/>
+</runstats>
+</nmaprun>

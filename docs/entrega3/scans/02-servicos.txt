@@ -1,0 +1,14 @@
+# Nmap 7.80 scan initiated Sat Nov 21 02:00:17 2026 as: "C:\\Program Files (x86)\\Nmap\\nmap.exe" -sV -sC -p 22,80 -oN 02-servicos.txt -oX 02-servicos.xml 192.168.56.102
+Nmap scan report for 192.168.56.102
+Host is up (0.00023s latency).
+
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 10.2p1 Ubuntu 2ubuntu3.8 (Ubuntu Linux; protocol 2.0)
+80/tcp open  http    Apache httpd 2.4.66 ((Ubuntu))
+|_http-server-header: Apache/2.4.66 (Ubuntu)
+|_http-title: Apache2 Ubuntu Default Page: It works
+MAC Address: 08:00:27:41:54:EB (Oracle VirtualBox virtual NIC)
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Sat Nov 21 02:00:26 2026 -- 1 IP address (1 host up) scanned in 9.46 seconds

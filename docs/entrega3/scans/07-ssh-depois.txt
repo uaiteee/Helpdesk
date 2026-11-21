@@ -1,0 +1,35 @@
+# Nmap 7.80 scan initiated Sat Nov 21 02:22:17 2026 as: "C:\\Program Files (x86)\\Nmap\\nmap.exe" -p 22 --script ssh2-enum-algos -oN 07-ssh-depois.txt 192.168.56.102
+Nmap scan report for 192.168.56.102
+Host is up (0.00088s latency).
+
+PORT   STATE SERVICE
+22/tcp open  ssh
+| ssh2-enum-algos: 
+|   kex_algorithms: (5)
+|       mlkem768x25519-sha256
+|       sntrup761x25519-sha512
+|       curve25519-sha256
+|       ext-info-s
+|       kex-strict-s-v00@openssh.com
+|   server_host_key_algorithms: (4)
+|       rsa-sha2-512
+|       rsa-sha2-256
+|       ecdsa-sha2-nistp256
+|       ssh-ed25519
+|   encryption_algorithms: (6)
+|       chacha20-poly1305@openssh.com
+|       aes128-gcm@openssh.com
+|       aes256-gcm@openssh.com
+|       aes128-ctr
+|       aes192-ctr
+|       aes256-ctr
+|   mac_algorithms: (3)
+|       hmac-sha2-256-etm@openssh.com
+|       hmac-sha2-512-etm@openssh.com
+|       umac-128-etm@openssh.com
+|   compression_algorithms: (2)
+|       none
+|_      zlib@openssh.com
+MAC Address: 08:00:27:41:54:EB (Oracle VirtualBox virtual NIC)
+
+# Nmap done at Sat Nov 21 02:22:18 2026 -- 1 IP address (1 host up) scanned in 1.23 seconds
